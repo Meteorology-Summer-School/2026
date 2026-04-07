@@ -1,0 +1,8 @@
+key,value
+title,最新情報・ポスター
+body,最新の告知画像や参加案内をこの欄に掲載できます。ポスター画像を差し替え、SNS や参加案内のリンクを更新してください。
+poster_image,assets/images/poster-placeholder.svg
+poster_alt,気象夏の学校ポスター
+poster_link,assets/images/poster-placeholder.svg
+poster_caption,ポスター画像をクリックすると大きく表示できます。
+section_note,X や Instagram、参加案内ページなどをここから案内します。

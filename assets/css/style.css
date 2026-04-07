@@ -653,6 +653,98 @@ code {
   font-size: 1rem;
 }
 
+.home-promo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.95fr);
+  gap: 24px;
+  align-items: start;
+  padding: clamp(18px, 3vw, 28px);
+  background: linear-gradient(180deg, rgba(247, 251, 255, 0.96), rgba(233, 243, 251, 0.88));
+  border: 1px solid rgba(143, 178, 203, 0.42);
+  border-radius: var(--radius-md);
+}
+
+.home-promo h2 {
+  margin-top: 0;
+}
+
+.home-promo__body p:first-child {
+  margin-top: 0;
+}
+
+.home-promo__body p:last-child {
+  margin-bottom: 0;
+}
+
+.home-promo__note {
+  margin: 16px 0 0;
+  color: var(--text-soft);
+}
+
+.home-promo__links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+}
+
+.home-promo__link {
+  display: block;
+  height: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(143, 178, 203, 0.42);
+  border-radius: 16px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.home-promo__link:hover {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(31, 103, 157, 0.35);
+  color: var(--accent-dark);
+}
+
+.home-promo__link-label {
+  display: block;
+  font-weight: 700;
+}
+
+.home-promo__link-note {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.home-promo__poster {
+  display: grid;
+  gap: 10px;
+  justify-items: end;
+}
+
+.home-promo__poster-link {
+  display: block;
+  width: min(100%, 460px);
+}
+
+.home-promo__poster-image {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid rgba(143, 178, 203, 0.42);
+  box-shadow: 0 18px 30px rgba(24, 52, 76, 0.14);
+}
+
+.home-promo__poster-caption {
+  margin: 0;
+  width: min(100%, 460px);
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  text-align: left;
+}
+
 .site-footer {
   padding: 0 0 34px;
 }
@@ -714,6 +806,14 @@ code {
 
   .invited-detail__image-wrap {
     max-width: 240px;
+  }
+
+  .home-promo {
+    grid-template-columns: 1fr;
+  }
+
+  .home-promo__poster {
+    justify-items: start;
   }
 }
 

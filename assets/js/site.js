@@ -46,6 +46,7 @@
   const PLACEHOLDERS = {
     updates: { kind: "timeline", source: "data/updates.csv" },
     overview: { kind: "overview", source: "data/overview.csv" },
+    "home-promo": { kind: "home-promo", source: "data/home_promo.csv", links: "data/home_social_links.csv" },
     schedule: {
       kind: "table",
       source: "data/schedule.csv",
@@ -449,6 +450,37 @@
     return '<div class="invited-talks"><div class="card-grid">' + summaryCards + '</div><div class="invited-detail-list">' + detailBlocks + '</div></div>';
   }
 
+  async function renderHomePromo(config) {
+    const settings = csvRowsToMap(await fetchCsv(config.source));
+    const links = await fetchCsv(config.links);
+    const title = settings.title ? "<h2>" + renderInline(settings.title) + "</h2>" : "";
+    const body = settings.body ? '<div class="home-promo__body">' + renderTextBlock(settings.body) + "</div>" : "";
+    const note = settings.section_note ? '<p class="home-promo__note">' + renderInline(settings.section_note) + "</p>" : "";
+    const posterImage = settings.poster_image
+      ? '<img class="home-promo__poster-image" src="' + escapeHtml(settings.poster_image) + '" alt="' + escapeHtml(settings.poster_alt || settings.title || "Poster") + '">'
+      : "";
+    const posterInner = settings.poster_link
+      ? '<a class="home-promo__poster-link" href="' + escapeHtml(settings.poster_link) + '">' + posterImage + "</a>"
+      : posterImage;
+    const posterCaption = settings.poster_caption
+      ? '<p class="home-promo__poster-caption">' + renderInline(settings.poster_caption) + "</p>"
+      : "";
+    const linkList = links.length
+      ? '<ul class="home-promo__links">' + links.map(function (row) {
+          const noteText = row.note ? '<span class="home-promo__link-note">' + renderInline(row.note) + "</span>" : "";
+          return '<li><a class="home-promo__link" href="' + escapeHtml(row.url || "#") + '">' +
+            '<span class="home-promo__link-label">' + renderInline(row.label || "") + "</span>" +
+            noteText +
+          "</a></li>";
+        }).join("") + "</ul>"
+      : "";
+
+    return '<section class="home-promo">' +
+      '<div class="home-promo__main">' + title + body + note + linkList + "</div>" +
+      '<aside class="home-promo__poster">' + posterInner + posterCaption + "</aside>" +
+      "</section>";
+  }
+
   function renderFaq(rows) {
     return '<div class="faq-list">' + rows.map(function (row) {
       return '<details class="faq-item"><summary>' + renderInline(row.question || "") + '</summary><div class="faq-item__answer">' + renderTextBlock(row.answer || "") + "</div></details>";
@@ -470,15 +502,18 @@
     if (config.kind === "table") {
       return renderDataTable(rows, config);
     }
-      if (config.kind === "cards") {
-        return renderCards(rows);
-      }
-      if (config.kind === "invited-talks") {
-        return renderInvitedTalks(rows);
-      }
-      if (config.kind === "faq") {
-        return renderFaq(rows);
-      }
+    if (config.kind === "cards") {
+      return renderCards(rows);
+    }
+    if (config.kind === "invited-talks") {
+      return renderInvitedTalks(rows);
+    }
+    if (config.kind === "home-promo") {
+      return renderHomePromo(config);
+    }
+    if (config.kind === "faq") {
+      return renderFaq(rows);
+    }
     return "";
   }
 
