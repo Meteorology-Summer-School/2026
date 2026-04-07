@@ -436,6 +436,24 @@ code {
   list-style: none;
   margin: 0;
   padding: 0;
+  height: min(62vh, 520px);
+  overflow-y: scroll;
+  padding-right: 8px;
+}
+
+.timeline-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.timeline-list::-webkit-scrollbar-track {
+  background: rgba(216, 232, 245, 0.9);
+  border-radius: 999px;
+}
+
+.timeline-list::-webkit-scrollbar-thumb {
+  background: rgba(31, 103, 157, 0.42);
+  border-radius: 999px;
+  border: 2px solid rgba(216, 232, 245, 0.9);
 }
 
 .timeline-list__item {

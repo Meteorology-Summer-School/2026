@@ -376,7 +376,15 @@
   }
 
   function renderTimeline(rows) {
-    return '<ul class="timeline-list">' + rows.map(function (row) {
+    const sortedRows = rows.slice().sort(function (left, right) {
+      const leftTime = Date.parse((left.date || "").replace(/\./g, "-"));
+      const rightTime = Date.parse((right.date || "").replace(/\./g, "-"));
+      const safeLeft = Number.isNaN(leftTime) ? 0 : leftTime;
+      const safeRight = Number.isNaN(rightTime) ? 0 : rightTime;
+      return safeRight - safeLeft;
+    });
+
+    return '<ul class="timeline-list">' + sortedRows.map(function (row) {
       return '<li class="timeline-list__item"><time class="timeline-list__date">' +
         renderInline(row.date || "") +
         '</time><div class="timeline-list__body"><strong>' +
