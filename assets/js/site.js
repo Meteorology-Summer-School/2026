@@ -56,7 +56,7 @@
         { key: "details", label: "備考" }
       ]
     },
-    invited: { kind: "cards", source: "data/invited_talks.csv" },
+    invited: { kind: "invited-talks", source: "data/invited_talks.csv" },
     general: {
       kind: "table",
       source: "data/general_presentations.csv",
@@ -425,6 +425,30 @@
     }).join("") + "</div>";
   }
 
+  function renderInvitedTalks(rows) {
+    const summaryCards = rows.map(function (row, index) {
+      const anchor = row.anchor || ("speaker-" + (index + 1));
+      const image = row.image ? '<img class="info-card__image" src="' + escapeHtml(row.image) + '" alt="' + escapeHtml(row.name || row.title || "") + '">' : "";
+      const category = row.category ? '<p class="info-card__eyebrow">' + renderInline(row.category) + "</p>" : "";
+      const subtitle = row.affiliation ? '<p class="info-card__subtitle">' + renderInline(row.affiliation) + "</p>" : "";
+      const theme = row.talk_title ? '<p class="invited-summary__theme">' + renderInline(row.talk_title) + "</p>" : "";
+      return '<section class="info-card invited-summary-card">' + image + '<div class="info-card__body">' + category + '<h3><a href="#' + escapeHtml(anchor) + '">' + renderInline(row.name || row.title || "") + '</a></h3>' + subtitle + theme + '</div></section>';
+    }).join("");
+
+    const detailBlocks = rows.map(function (row, index) {
+      const anchor = row.anchor || ("speaker-" + (index + 1));
+      const image = row.image ? '<div class="invited-detail__image-wrap"><img class="invited-detail__image" src="' + escapeHtml(row.image) + '" alt="' + escapeHtml(row.name || row.title || "") + '"></div>' : "";
+      const profile = row.profile ? '<p><strong>所属・役職</strong><br>' + renderTextBlock(row.profile).replace(/^<p>|<\/p>$/g, "") + '</p>' : "";
+      const talkTitle = row.talk_title ? '<p><strong>講演題目</strong><br>' + renderInline(row.talk_title) + '</p>' : "";
+      const abstract = row.abstract ? '<div class="invited-detail__section"><h4>講演要旨</h4>' + renderTextBlock(row.abstract) + '</div>' : "";
+      const message = row.message ? '<div class="invited-detail__section"><h4>学生へのメッセージ</h4>' + renderTextBlock(row.message) + '</div>' : "";
+      const link = row.link ? '<p class="info-card__link"><a href="' + escapeHtml(row.link) + '">' + renderInline(row.link_label || "関連リンク") + '</a></p>' : "";
+      return '<section class="invited-detail" id="' + escapeHtml(anchor) + '"><div class="invited-detail__header">' + image + '<div class="invited-detail__intro"><p class="info-card__eyebrow">' + renderInline(row.category || "招待講演") + '</p><h3>' + renderInline(row.name || row.title || "") + '</h3>' + profile + talkTitle + link + '</div></div>' + abstract + message + '</section>';
+    }).join("");
+
+    return '<div class="invited-talks"><div class="card-grid">' + summaryCards + '</div><div class="invited-detail-list">' + detailBlocks + '</div></div>';
+  }
+
   function renderFaq(rows) {
     return '<div class="faq-list">' + rows.map(function (row) {
       return '<details class="faq-item"><summary>' + renderInline(row.question || "") + '</summary><div class="faq-item__answer">' + renderTextBlock(row.answer || "") + "</div></details>";
@@ -446,12 +470,15 @@
     if (config.kind === "table") {
       return renderDataTable(rows, config);
     }
-    if (config.kind === "cards") {
-      return renderCards(rows);
-    }
-    if (config.kind === "faq") {
-      return renderFaq(rows);
-    }
+      if (config.kind === "cards") {
+        return renderCards(rows);
+      }
+      if (config.kind === "invited-talks") {
+        return renderInvitedTalks(rows);
+      }
+      if (config.kind === "faq") {
+        return renderFaq(rows);
+      }
     return "";
   }
 
