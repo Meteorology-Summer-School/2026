@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Sponsor Placeholder</title>
+  <desc id="desc">Logo placeholder for sponsor cards.</desc>
+  <rect width="1200" height="675" rx="0" fill="#eef5fb"/>
+  <rect x="110" y="110" width="980" height="455" rx="44" fill="#ffffff" stroke="#8eb3cf" stroke-width="12"/>
+  <circle cx="340" cy="338" r="108" fill="#1f6aa5"/>
+  <rect x="500" y="248" width="360" height="40" rx="20" fill="#9abdd6"/>
+  <rect x="500" y="324" width="260" height="40" rx="20" fill="#c5dcec"/>
+  <rect x="500" y="400" width="420" height="40" rx="20" fill="#dcebf5"/>
+</svg>

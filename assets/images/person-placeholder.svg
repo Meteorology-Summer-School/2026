@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Speaker Placeholder</title>
+  <desc id="desc">Simple placeholder image for invited speakers or participants.</desc>
+  <rect width="1200" height="675" fill="#edf6fc"/>
+  <circle cx="600" cy="250" r="120" fill="#b8d3e7"/>
+  <path d="M360 590c28-140 132-220 240-220s212 80 240 220" fill="#8eb3cf"/>
+  <rect x="84" y="84" width="1032" height="507" rx="32" fill="none" stroke="#8eb3cf" stroke-width="12"/>
+</svg>

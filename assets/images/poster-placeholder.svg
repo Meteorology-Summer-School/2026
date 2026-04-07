@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Poster Placeholder</title>
+  <desc id="desc">Poster placeholder image with soft blue shapes.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#edf6fc"/>
+      <stop offset="100%" stop-color="#cfe3f2"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e7f1f8"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" rx="44" fill="url(#bg)"/>
+  <circle cx="168" cy="192" r="108" fill="#d7e8f5"/>
+  <circle cx="744" cy="1068" r="124" fill="#c7dff0"/>
+  <rect x="108" y="128" width="684" height="944" rx="36" fill="url(#card)" stroke="#8eb3cf" stroke-width="8"/>
+  <rect x="168" y="208" width="564" height="64" rx="16" fill="#1f6aa5"/>
+  <rect x="168" y="320" width="430" height="30" rx="15" fill="#9abdd6"/>
+  <rect x="168" y="378" width="490" height="30" rx="15" fill="#bfd7e8"/>
+  <rect x="168" y="474" width="564" height="300" rx="28" fill="#dbeaf5"/>
+  <rect x="168" y="842" width="220" height="88" rx="20" fill="#1f6aa5"/>
+  <rect x="418" y="842" width="314" height="88" rx="20" fill="#d4e6f4"/>
+  <rect x="168" y="974" width="564" height="20" rx="10" fill="#9abdd6"/>
+</svg>
