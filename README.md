@@ -18,6 +18,7 @@ GitHub Pages の静的配信だけで動くサイトです。Jekyll、Gemfile、
 ## 編集場所
 
 - トップページ本文: `content/home.md`
+- ホーム上部の背景写真とタイトル文: `data/home_hero.csv`
 - 開催概要の表: `data/overview.csv`
 - お知らせ: `data/updates.csv`
 - スケジュール: `data/schedule.csv`

@@ -364,6 +364,16 @@
     return csvCache.get(path);
   }
 
+  function csvRowsToMap(rows) {
+    const result = {};
+    rows.forEach(function (row) {
+      if (row.key) {
+        result[row.key] = row.value || "";
+      }
+    });
+    return result;
+  }
+
   function renderTimeline(rows) {
     return '<ul class="timeline-list">' + rows.map(function (row) {
       return '<li class="timeline-list__item"><time class="timeline-list__date">' +
@@ -468,24 +478,47 @@
   }
 
   function buildHero() {
-    return '<section class="hero"><div class="hero__content"><p class="hero__eyebrow">Meteorological Summer School</p><h1>' +
+    return '<section class="hero" id="home-hero"><div class="hero__overlay"><div class="hero__content hero__content--plain"><p class="hero__eyebrow" id="hero-eyebrow">Meteorological Summer School</p><h1 id="hero-title">' +
       escapeHtml(SITE.title) +
-      '</h1><p class="hero__lead">' +
-      escapeHtml(SITE.lead) +
-      '</p><div class="hero__meta" id="hero-meta"></div></div><div class="hero__poster"><img src="assets/images/poster-placeholder.svg" alt="気象夏の学校ポスター"></div></section>';
+      '</h1></div></div></section>';
   }
 
   function buildShell(page) {
     const heading = page.hero ? "" : '<header class="page-heading"><p class="page-heading__eyebrow">' + escapeHtml(SITE.title) + '</p><h1>' + escapeHtml(page.title) + "</h1>" + (page.lead ? '<p class="page-heading__lead">' + escapeHtml(page.lead) + "</p>" : "") + "</header>";
-    return '<div class="site-shell"><header class="site-header"><div class="site-header__inner"><a class="site-brand" href="index.html"><span class="site-brand__eyebrow">' + escapeHtml(SITE.subtitle) + '</span><span class="site-brand__title">' + escapeHtml(SITE.title) + '</span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">メニュー</button></div>' + buildNav(page) + '</header><main class="site-main">' + (page.hero ? buildHero() : "") + '<div class="content-wrap"><article class="content-card' + (page.hero ? " content-card--home" : "") + '">' + heading + '<div class="page-content" id="page-content"></div></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>' + escapeHtml(SITE.title) + '</p><p>このサイトは GitHub Pages の静的配信のみで動作します。</p></div></footer></div>';
+    const homeIntro = page.hero
+      ? '<div class="content-wrap content-wrap--hero-follow"><section class="content-card content-card--home-intro"><div class="home-intro__lead" id="hero-lead"></div><div class="hero__meta hero__meta--below" id="hero-meta"></div></section></div>'
+      : "";
+    return '<div class="site-shell"><header class="site-header"><div class="site-header__inner"><a class="site-brand" href="index.html"><span class="site-brand__eyebrow">' + escapeHtml(SITE.subtitle) + '</span><span class="site-brand__title">' + escapeHtml(SITE.title) + '</span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">メニュー</button></div>' + buildNav(page) + '</header><main class="site-main">' + (page.hero ? buildHero() : "") + homeIntro + '<div class="content-wrap"><article class="content-card' + (page.hero ? " content-card--home" : "") + '">' + heading + '<div class="page-content" id="page-content"></div></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>' + escapeHtml(SITE.title) + '</p><p>このサイトは GitHub Pages の静的配信のみで動作します。</p></div></footer></div>';
   }
 
   async function renderHeroMeta() {
     const rows = await fetchCsv("data/overview.csv");
+    const heroSettings = csvRowsToMap(await fetchCsv("data/home_hero.csv"));
     const target = document.getElementById("hero-meta");
     if (!target) {
       return;
     }
+    const hero = document.getElementById("home-hero");
+    const eyebrow = document.getElementById("hero-eyebrow");
+    const title = document.getElementById("hero-title");
+    const lead = document.getElementById("hero-lead");
+
+    if (heroSettings.background_image && hero) {
+      hero.style.backgroundImage =
+        "linear-gradient(180deg, rgba(7, 28, 45, 0.18), rgba(7, 28, 45, 0.58)), url('" +
+        heroSettings.background_image.replace(/'/g, "%27") +
+        "')";
+    }
+    if (heroSettings.eyebrow && eyebrow) {
+      eyebrow.textContent = heroSettings.eyebrow;
+    }
+    if (heroSettings.title && title) {
+      title.textContent = heroSettings.title;
+    }
+    if (heroSettings.lead && lead) {
+      lead.innerHTML = "<p>" + renderInline(heroSettings.lead) + "</p>";
+    }
+
     target.innerHTML = rows.slice(0, 3).map(function (row) {
       return '<div class="hero__meta-item"><span>' + renderInline(row.item || "") + "</span><strong>" + renderInline(row.value || "") + "</strong></div>";
     }).join("");
