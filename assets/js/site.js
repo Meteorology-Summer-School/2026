@@ -639,7 +639,7 @@
             const previousLayer = activeLayer;
             activeLayer = inactiveLayer;
             inactiveLayer = previousLayer;
-          }, 3000);
+          }, 4000);
         }
       }
     } else if (heroImage) {
