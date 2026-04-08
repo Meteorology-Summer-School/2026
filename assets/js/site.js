@@ -366,6 +366,69 @@
     return csvCache.get(path);
   }
 
+  async function fetchCsvOrEmpty(path) {
+    try {
+      return await fetchCsv(path);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function clonePageDefinitions() {
+    const pages = {};
+    Object.keys(PAGES).forEach(function (key) {
+      pages[key] = Object.assign({}, PAGES[key]);
+    });
+    return pages;
+  }
+
+  function buildNavItems(pages) {
+    return [
+      { id: "home", label: pages.home.navLabel || pages.home.title, href: "index.html" },
+      {
+        id: "overview",
+        label: pages.overview.navLabel || pages.overview.title,
+        href: "overview.html",
+        children: [
+          { id: "schedule", label: pages.schedule.navLabel || pages.schedule.title, href: "schedule.html" },
+          { id: "access", label: pages.access.navLabel || pages.access.title, href: "access.html" },
+          { id: "invited", label: pages.invited.navLabel || pages.invited.title, href: "invited.html" },
+          { id: "general", label: pages.general.navLabel || pages.general.title, href: "general.html" },
+          { id: "participants", label: pages.participants.navLabel || pages.participants.title, href: "participants.html" },
+          { id: "registration", label: pages.registration.navLabel || pages.registration.title, href: "registration.html" },
+          { id: "observation", label: pages.observation.navLabel || pages.observation.title, href: "observation.html" }
+        ]
+      },
+      { id: "sponsors", label: pages.sponsors.navLabel || pages.sponsors.title, href: "sponsors.html" },
+      { id: "faq", label: pages.faq.navLabel || pages.faq.title, href: "faq.html" },
+      { id: "links", label: pages.links.navLabel || pages.links.title, href: "links.html" },
+      { id: "contact", label: pages.contact.navLabel || pages.contact.title, href: "contact.html" }
+    ];
+  }
+
+  async function loadPageConfig(pageKey) {
+    const pages = clonePageDefinitions();
+    const labelRows = await fetchCsvOrEmpty("data/page_labels.csv");
+
+    labelRows.forEach(function (row) {
+      const page = pages[row.page];
+      if (!page) {
+        return;
+      }
+      if (row.nav_label) {
+        page.navLabel = row.nav_label;
+      }
+      if (row.page_title) {
+        page.title = row.page_title;
+      }
+    });
+
+    return {
+      page: pages[pageKey] || pages.home,
+      navItems: buildNavItems(pages)
+    };
+  }
+
   function csvRowsToMap(rows) {
     const result = {};
     rows.forEach(function (row) {
@@ -529,8 +592,8 @@
     return html;
   }
 
-  function buildNav(page) {
-    return '<nav class="site-nav" id="site-nav" aria-label="主要メニュー"><ul class="site-nav__list">' + NAV_ITEMS.map(function (item) {
+  function buildNav(page, navItems) {
+    return '<nav class="site-nav" id="site-nav" aria-label="主要メニュー"><ul class="site-nav__list">' + navItems.map(function (item) {
       const isActive = page.navRoot === item.id || page.id === item.id;
       const hasChildren = Array.isArray(item.children) && item.children.length > 0;
       const submenu = hasChildren
@@ -574,14 +637,14 @@
     return '<div class="site-banner"><div class="site-banner__inner">' + message + cta + "</div></div>";
   }
 
-  function buildShell(page, brandSettings, bannerSettings) {
+  function buildShell(page, navItems, brandSettings, bannerSettings) {
     const homeIntro = page.hero
       ? '<div class="content-wrap content-wrap--hero-follow"><section class="content-card content-card--home-intro"><div class="home-intro__lead" id="hero-lead"></div><div class="hero__meta hero__meta--below" id="hero-meta"></div></section></div>'
       : "";
     const logoImage = brandSettings.logo_image || "assets/images/site-icon-placeholder.svg";
     const logoAlt = brandSettings.logo_alt || SITE.title;
     const logo = '<span class="site-brand__logo-wrap"><img class="site-brand__logo" src="' + escapeHtml(logoImage) + '" alt="' + escapeHtml(logoAlt) + '"></span>';
-    return '<div class="site-shell">' + buildBanner(bannerSettings) + '<header class="site-header"><div class="site-header__inner"><a class="site-brand" href="index.html">' + logo + '<span class="site-brand__text"><span class="site-brand__eyebrow">' + escapeHtml(SITE.subtitle) + '</span><span class="site-brand__title">' + escapeHtml(SITE.title) + '</span></span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉"><span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span><span class="nav-toggle__label">メニュー</span></button>' + buildNav(page) + '</div></header><main class="site-main site-main--hero">' + buildHero(page) + homeIntro + '<div class="content-wrap"><article class="content-card' + (page.hero ? " content-card--home" : "") + '">' + '<div class="page-content" id="page-content"></div></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>' + escapeHtml(SITE.title) + '</p><p>このサイトは GitHub Pages の静的配信のみで動作します。</p></div></footer></div>';
+    return '<div class="site-shell">' + buildBanner(bannerSettings) + '<header class="site-header"><div class="site-header__inner"><a class="site-brand" href="index.html">' + logo + '<span class="site-brand__text"><span class="site-brand__eyebrow">' + escapeHtml(SITE.subtitle) + '</span><span class="site-brand__title">' + escapeHtml(SITE.title) + '</span></span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉"><span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span><span class="nav-toggle__label">メニュー</span></button>' + buildNav(page, navItems) + '</div></header><main class="site-main site-main--hero">' + buildHero(page) + homeIntro + '<div class="content-wrap"><article class="content-card' + (page.hero ? " content-card--home" : "") + '">' + '<div class="page-content" id="page-content"></div></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>' + escapeHtml(SITE.title) + '</p><p>このサイトは GitHub Pages の静的配信のみで動作します。</p></div></footer></div>';
 
   }
 
@@ -774,13 +837,14 @@
 
   async function bootstrap() {
     const pageKey = document.body.dataset.page || "home";
-    const page = PAGES[pageKey] || PAGES.home;
+    const pageConfig = await loadPageConfig(pageKey);
+    const page = pageConfig.page;
     document.title = page.title + " | " + SITE.title;
     const brandSettings = csvRowsToMap(await fetchCsv("data/site_brand.csv"));
     const bannerSettings = csvRowsToMap(await fetchCsv("data/site_banner.csv"));
 
     const root = document.getElementById("site-root");
-    root.innerHTML = buildShell(page, brandSettings, bannerSettings);
+    root.innerHTML = buildShell(page, pageConfig.navItems, brandSettings, bannerSettings);
     bindNav();
     syncBannerHeight();
     syncHeaderHeight();
