@@ -553,7 +553,20 @@
       '</h1></div></div></section>';
   }
 
-  function buildShell(page, brandSettings) {
+  function buildBanner(settings) {
+    if (!settings.message) {
+      return "";
+    }
+
+    const message = '<p class="site-banner__message">' + renderInline(settings.message) + "</p>";
+    const cta = settings.link
+      ? '<a class="site-banner__button" href="' + escapeHtml(settings.link) + '">' + escapeHtml(settings.link_label || "詳細") + "</a>"
+      : "";
+
+    return '<div class="site-banner"><div class="site-banner__inner">' + message + cta + "</div></div>";
+  }
+
+  function buildShell(page, brandSettings, bannerSettings) {
     const heading = page.hero ? "" : '<header class="page-heading"><p class="page-heading__eyebrow">' + escapeHtml(SITE.title) + '</p><h1>' + escapeHtml(page.title) + "</h1>" + (page.lead ? '<p class="page-heading__lead">' + escapeHtml(page.lead) + "</p>" : "") + "</header>";
     const homeIntro = page.hero
       ? '<div class="content-wrap content-wrap--hero-follow"><section class="content-card content-card--home-intro"><div class="home-intro__lead" id="hero-lead"></div><div class="hero__meta hero__meta--below" id="hero-meta"></div></section></div>'
@@ -561,7 +574,7 @@
     const logoImage = brandSettings.logo_image || "assets/images/site-icon-placeholder.svg";
     const logoAlt = brandSettings.logo_alt || SITE.title;
     const logo = '<span class="site-brand__logo-wrap"><img class="site-brand__logo" src="' + escapeHtml(logoImage) + '" alt="' + escapeHtml(logoAlt) + '"></span>';
-    return '<div class="site-shell"><header class="site-header"><div class="site-header__inner"><a class="site-brand" href="index.html">' + logo + '<span class="site-brand__text"><span class="site-brand__eyebrow">' + escapeHtml(SITE.subtitle) + '</span><span class="site-brand__title">' + escapeHtml(SITE.title) + '</span></span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">メニュー</button>' + buildNav(page) + '</div></header><main class="site-main' + (page.hero ? " site-main--home" : "") + '">' + (page.hero ? buildHero() : "") + homeIntro + '<div class="content-wrap"><article class="content-card' + (page.hero ? " content-card--home" : "") + '">' + heading + '<div class="page-content" id="page-content"></div></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>' + escapeHtml(SITE.title) + '</p><p>このサイトは GitHub Pages の静的配信のみで動作します。</p></div></footer></div>';
+    return '<div class="site-shell">' + buildBanner(bannerSettings) + '<header class="site-header"><div class="site-header__inner"><a class="site-brand" href="index.html">' + logo + '<span class="site-brand__text"><span class="site-brand__eyebrow">' + escapeHtml(SITE.subtitle) + '</span><span class="site-brand__title">' + escapeHtml(SITE.title) + '</span></span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">メニュー</button>' + buildNav(page) + '</div></header><main class="site-main' + (page.hero ? " site-main--home" : "") + '">' + (page.hero ? buildHero() : "") + homeIntro + '<div class="content-wrap"><article class="content-card' + (page.hero ? " content-card--home" : "") + '">' + heading + '<div class="page-content" id="page-content"></div></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>' + escapeHtml(SITE.title) + '</p><p>このサイトは GitHub Pages の静的配信のみで動作します。</p></div></footer></div>';
 
   }
 
@@ -630,6 +643,11 @@
     document.documentElement.style.setProperty("--header-height", header.offsetHeight + "px");
   }
 
+  function syncBannerHeight() {
+    const banner = document.querySelector(".site-banner");
+    document.documentElement.style.setProperty("--banner-height", banner ? banner.offsetHeight + "px" : "0px");
+  }
+
   function syncHeaderTopState() {
     const header = document.querySelector(".site-header");
     if (!header) {
@@ -695,12 +713,15 @@
     const page = PAGES[pageKey] || PAGES.home;
     document.title = page.title + " | " + SITE.title;
     const brandSettings = csvRowsToMap(await fetchCsv("data/site_brand.csv"));
+    const bannerSettings = csvRowsToMap(await fetchCsv("data/site_banner.csv"));
 
     const root = document.getElementById("site-root");
-    root.innerHTML = buildShell(page, brandSettings);
+    root.innerHTML = buildShell(page, brandSettings, bannerSettings);
     bindNav();
+    syncBannerHeight();
     syncHeaderHeight();
     syncHeaderTopState();
+    window.addEventListener("resize", syncBannerHeight);
     window.addEventListener("resize", syncHeaderHeight);
     window.addEventListener("scroll", syncHeaderTopState, { passive: true });
 
