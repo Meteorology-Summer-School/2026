@@ -44,6 +44,22 @@
   const PLACEHOLDERS = {
     updates: { kind: "timeline", source: "data/updates.csv" },
     overview: { kind: "overview", source: "data/overview.csv" },
+    "access-venue": {
+      kind: "table",
+      source: "data/access_venue.csv",
+      columns: [
+        { key: "item", label: "項目" },
+        { key: "value", label: "内容" }
+      ]
+    },
+    "access-lodging": {
+      kind: "table",
+      source: "data/access_lodging.csv",
+      columns: [
+        { key: "item", label: "項目" },
+        { key: "value", label: "内容" }
+      ]
+    },
     "home-promo": { kind: "home-promo", source: "data/home_promo.csv", links: "data/home_social_links.csv" },
     schedule: {
       kind: "table",
@@ -138,7 +154,7 @@
       /^[-*]\s+/.test(trimmed) ||
       /^\d+\.\s+/.test(trimmed) ||
       /^!\[.*\]\((.+)\)$/.test(trimmed) ||
-      (trimmed.includes("|") && typeof nextLine === "string" && /^\s*\|?[\s:-|]+\|?\s*$/.test(nextLine.trim()))
+      isMarkdownTableStart(line, nextLine)
     );
   }
 
@@ -147,6 +163,12 @@
     return raw.split("|").map(function (cell) {
       return cell.trim();
     });
+  }
+
+  function isMarkdownTableStart(line, nextLine) {
+    const trimmed = line.trim();
+    const nextTrimmed = typeof nextLine === "string" ? nextLine.trim() : "";
+    return trimmed.includes("|") && /^\s*\|?[\s:-|]+\|?\s*$/.test(nextTrimmed);
   }
 
   function parseMarkdownBlocks(markdown) {
@@ -214,11 +236,11 @@
         continue;
       }
 
-      if (trimmed.includes("|") && index + 1 < lines.length && /^\s*\|?[\s:-|]+\|?\s*$/.test(lines[index + 1].trim())) {
+      if (isMarkdownTableStart(line, lines[index + 1])) {
         const headers = parseTableRow(lines[index]);
         const rows = [];
         index += 2;
-        while (index < lines.length && lines[index].trim().includes("|")) {
+        while (index < lines.length && lines[index].trim() && lines[index].includes("|")) {
           rows.push(parseTableRow(lines[index]));
           index += 1;
         }
