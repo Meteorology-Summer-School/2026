@@ -61,6 +61,14 @@
         { key: "value", label: "内容" }
       ]
     },
+    "contact-info": {
+      kind: "table",
+      source: "data/contact_info.csv",
+      columns: [
+        { key: "item", label: "項目" },
+        { key: "value", label: "内容" }
+      ]
+    },
     "home-promo": { kind: "home-promo", source: "data/home_promo.csv", links: "data/home_social_links.csv" },
     schedule: {
       kind: "table",
