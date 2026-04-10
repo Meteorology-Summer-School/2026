@@ -23,7 +23,6 @@
 }
 
 html {
-  font-size: 120%;
   scroll-behavior: smooth;
 }
 
@@ -184,13 +183,14 @@ code {
 .hero__eyebrow,
 .info-card__eyebrow {
   display: block;
-  color: var(--text-soft);
+  color: #10283d;
   font-size: 0.82rem;
   letter-spacing: 0.06em;
 }
 
 .site-brand__title {
   display: block;
+  color: var(--text);
   font-size: clamp(1.45rem, 2vw, 1.9rem);
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -265,10 +265,21 @@ code {
   min-height: 42px;
   padding: 0 14px;
   border-radius: 999px;
-  color: var(--text);
+  color: #10283d;
   text-decoration: none;
   white-space: nowrap;
   font: inherit;
+}
+
+.site-header.is-top .site-brand__eyebrow,
+.site-header.is-top .site-brand__title,
+.site-header.is-top .site-nav__link {
+  color: #ffffff;
+}
+
+.site-header.is-top .site-nav__item.is-active > .site-nav__link,
+.site-header.is-top .site-nav__link:hover {
+  color: #ffffff;
 }
 
 .site-nav__item.is-active > .site-nav__link,
@@ -503,7 +514,7 @@ code {
 
 .home-intro__lead {
   color: var(--text);
-  font-size: 1.02rem;
+  font-size: 1.22rem;
 }
 
 .home-intro__lead p {
@@ -518,19 +529,19 @@ code {
   margin: 42px 0 18px;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(143, 178, 203, 0.4);
-  font-size: clamp(1.32rem, 2.6vw, 1.55rem);
+  font-size: clamp(1.58rem, 2.9vw, 1.86rem);
 }
 
 .page-content h3 {
   margin: 30px 0 14px;
-  font-size: clamp(1.08rem, 2vw, 1.2rem);
+  font-size: clamp(1.3rem, 2.3vw, 1.44rem);
 }
 
 .page-content p,
 .page-content li,
 .page-content th,
 .page-content td {
-  font-size: 1.03rem;
+  font-size: 1.24rem;
   word-break: auto-phrase;
   overflow-wrap: anywhere;
 }
