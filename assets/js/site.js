@@ -127,6 +127,14 @@
       .replace(/"/g, "&quot;");
   }
 
+  function isExternalUrl(url) {
+    return /^https?:\/\//i.test(String(url || "").trim());
+  }
+
+  function buildLinkAttrs(url) {
+    return isExternalUrl(url) ? ' target="_blank" rel="noopener noreferrer"' : "";
+  }
+
   function renderInline(text) {
     const codeStore = [];
     let value = escapeHtml(text);
@@ -138,7 +146,7 @@
     });
 
     value = value.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (_, label, href) {
-      return '<a href="' + escapeHtml(href) + '">' + label + "</a>";
+      return '<a href="' + escapeHtml(href) + '"' + buildLinkAttrs(href) + ">" + label + "</a>";
     });
     value = value.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
     value = value.replace(/\*([^*]+)\*/g, "<em>$1</em>");
@@ -485,7 +493,7 @@
     if (!link) {
       return "<strong>" + content + "</strong>";
     }
-    return '<strong><a href="' + escapeHtml(link) + '" target="_blank" rel="noopener noreferrer">' +
+    return '<strong><a href="' + escapeHtml(link) + '"' + buildLinkAttrs(link) + ">" +
       (linkLabel ? renderInline(linkLabel) : content) +
       "</a></strong>";
   }
@@ -524,7 +532,7 @@
       const category = row.category ? '<p class="info-card__eyebrow">' + renderInline(row.category) + "</p>" : "";
       const subtitle = row.subtitle ? '<p class="info-card__subtitle">' + renderInline(row.subtitle) + "</p>" : "";
       const text = row.text ? '<div class="info-card__text">' + renderTextBlock(row.text) + "</div>" : "";
-      const link = row.link ? '<p class="info-card__link"><a href="' + escapeHtml(row.link) + '">' + renderInline(row.link_label || "詳細を見る") + "</a></p>" : "";
+      const link = row.link ? '<p class="info-card__link"><a href="' + escapeHtml(row.link) + '"' + buildLinkAttrs(row.link) + ">" + renderInline(row.link_label || "詳細を見る") + "</a></p>" : "";
       return '<section class="info-card">' + image + '<div class="info-card__body">' + category + "<h3>" + renderInline(row.title || "") + "</h3>" + subtitle + text + link + "</div></section>";
     }).join("") + "</div>";
   }
@@ -535,7 +543,7 @@
       ? '<div class="map-embed"><iframe src="' + escapeHtml(settings.embed_url) + '" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" title="' + escapeHtml(settings.title || "地図") + '"></iframe></div>'
       : "";
     const link = settings.link_url
-      ? '<p class="map-embed__link"><a href="' + escapeHtml(settings.link_url) + '" target="_blank" rel="noopener noreferrer">' + renderInline(settings.link_label || "Google Mapsで見る") + "</a></p>"
+      ? '<p class="map-embed__link"><a href="' + escapeHtml(settings.link_url) + '"' + buildLinkAttrs(settings.link_url) + ">" + renderInline(settings.link_label || "Google Mapsで見る") + "</a></p>"
       : "";
     return '<section class="map-block">' + iframe + link + "</section>";
   }
@@ -557,7 +565,7 @@
       const talkTitle = row.talk_title ? '<p><strong>講演題目</strong><br>' + renderInline(row.talk_title) + '</p>' : "";
       const abstract = row.abstract ? '<div class="invited-detail__section"><h4>講演要旨</h4>' + renderTextBlock(row.abstract) + '</div>' : "";
       const message = row.message ? '<div class="invited-detail__section"><h4>学生へのメッセージ</h4>' + renderTextBlock(row.message) + '</div>' : "";
-      const link = row.link ? '<p class="info-card__link"><a href="' + escapeHtml(row.link) + '">' + renderInline(row.link_label || "関連リンク") + '</a></p>' : "";
+      const link = row.link ? '<p class="info-card__link"><a href="' + escapeHtml(row.link) + '"' + buildLinkAttrs(row.link) + ">" + renderInline(row.link_label || "関連リンク") + '</a></p>' : "";
       return '<section class="invited-detail" id="' + escapeHtml(anchor) + '"><div class="invited-detail__header">' + image + '<div class="invited-detail__intro"><p class="info-card__eyebrow">' + renderInline(row.category || "招待講演") + '</p><h3>' + renderInline(row.name || row.title || "") + '</h3>' + profile + talkTitle + link + '</div></div>' + abstract + message + '</section>';
     }).join("");
 
@@ -574,7 +582,7 @@
       ? '<img class="home-promo__poster-image" src="' + escapeHtml(settings.poster_image) + '" alt="' + escapeHtml(settings.poster_alt || settings.title || "Poster") + '">'
       : "";
     const posterInner = settings.poster_link
-      ? '<a class="home-promo__poster-link" href="' + escapeHtml(settings.poster_link) + '">' + posterImage + "</a>"
+      ? '<a class="home-promo__poster-link" href="' + escapeHtml(settings.poster_link) + '"' + buildLinkAttrs(settings.poster_link) + ">" + posterImage + "</a>"
       : posterImage;
     const posterCaption = settings.poster_caption
       ? '<p class="home-promo__poster-caption">' + renderInline(settings.poster_caption) + "</p>"
@@ -582,7 +590,7 @@
     const linkList = links.length
       ? '<ul class="home-promo__links">' + links.map(function (row) {
           const noteText = row.note ? '<span class="home-promo__link-note">' + renderInline(row.note) + "</span>" : "";
-          return '<li><a class="home-promo__link" href="' + escapeHtml(row.url || "#") + '">' +
+          return '<li><a class="home-promo__link" href="' + escapeHtml(row.url || "#") + '"' + buildLinkAttrs(row.url || "") + ">" +
             '<span class="home-promo__link-label">' + renderInline(row.label || "") + "</span>" +
             noteText +
           "</a></li>";
@@ -688,14 +696,24 @@
     return '<div class="site-banner"><div class="site-banner__inner">' + message + cta + "</div></div>";
   }
 
-  function buildShell(page, navItems, brandSettings, bannerSettings) {
+  function buildFooter(settings) {
+    const owner = settings.owner_text
+      ? "<p>" + renderInline(settings.owner_text) + "</p>"
+      : "";
+    const note = settings.note_text
+      ? '<p><a href="' + escapeHtml(settings.note_link || "#") + '"' + buildLinkAttrs(settings.note_link || "") + ">" + renderInline(settings.note_text) + "</a></p>"
+      : "";
+    return '<footer class="site-footer"><div class="site-footer__inner">' + owner + note + "</div></footer>";
+  }
+
+  function buildShell(page, navItems, brandSettings, bannerSettings, footerSettings) {
     const homeIntro = page.hero
       ? '<div class="content-wrap content-wrap--hero-follow"><section class="content-card content-card--home-intro"><div class="home-intro__lead" id="hero-lead"></div><div class="hero__meta hero__meta--below" id="hero-meta"></div></section></div>'
       : "";
     const logoImage = brandSettings.logo_image || "assets/images/site-icon-placeholder.svg";
     const logoAlt = brandSettings.logo_alt || SITE.title;
     const logo = '<span class="site-brand__logo-wrap"><img class="site-brand__logo" src="' + escapeHtml(logoImage) + '" alt="' + escapeHtml(logoAlt) + '"></span>';
-    return '<div class="site-shell">' + buildBanner(bannerSettings) + '<header class="site-header"><div class="site-header__inner"><a class="site-brand" href="index.html">' + logo + '<span class="site-brand__text"><span class="site-brand__eyebrow">' + escapeHtml(SITE.subtitle) + '</span><span class="site-brand__title">' + escapeHtml(SITE.title) + '</span></span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉"><span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span><span class="nav-toggle__label">メニュー</span></button>' + buildNav(page, navItems) + '</div></header><main class="site-main site-main--hero">' + buildHero(page) + homeIntro + '<div class="content-wrap"><article class="content-card' + (page.hero ? " content-card--home" : "") + '">' + '<div class="page-content" id="page-content"></div></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>' + escapeHtml(SITE.title) + '</p><p>このサイトは GitHub Pages の静的配信のみで動作します。</p></div></footer></div>';
+    return '<div class="site-shell">' + buildBanner(bannerSettings) + '<header class="site-header"><div class="site-header__inner"><a class="site-brand" href="index.html">' + logo + '<span class="site-brand__text"><span class="site-brand__eyebrow">' + escapeHtml(SITE.subtitle) + '</span><span class="site-brand__title">' + escapeHtml(SITE.title) + '</span></span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉"><span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span><span class="nav-toggle__label">メニュー</span></button>' + buildNav(page, navItems) + '</div></header><main class="site-main site-main--hero">' + buildHero(page) + homeIntro + '<div class="content-wrap"><article class="content-card' + (page.hero ? " content-card--home" : "") + '">' + '<div class="page-content" id="page-content"></div></article></div></main>' + buildFooter(footerSettings) + '</div>';
 
   }
 
@@ -893,9 +911,10 @@
     document.title = page.title + " | " + SITE.title;
     const brandSettings = csvRowsToMap(await fetchCsv("data/site_brand.csv"));
     const bannerSettings = csvRowsToMap(await fetchCsv("data/site_banner.csv"));
+    const footerSettings = csvRowsToMap(await fetchCsv("data/site_footer.csv"));
 
     const root = document.getElementById("site-root");
-    root.innerHTML = buildShell(page, pageConfig.navItems, brandSettings, bannerSettings);
+    root.innerHTML = buildShell(page, pageConfig.navItems, brandSettings, bannerSettings, footerSettings);
     bindNav();
     syncBannerHeight();
     syncHeaderHeight();
