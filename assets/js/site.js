@@ -552,15 +552,6 @@
   }
 
   function renderInvitedTalks(rows) {
-    const summaryCards = rows.map(function (row, index) {
-      const anchor = row.anchor || ("speaker-" + (index + 1));
-      const image = row.image ? '<img class="info-card__image" src="' + escapeHtml(row.image) + '" alt="' + escapeHtml(row.name || row.title || "") + '">' : "";
-      const category = row.category ? '<p class="info-card__eyebrow">' + renderInline(row.category) + "</p>" : "";
-      const subtitle = row.affiliation ? '<p class="info-card__subtitle">' + renderInline(row.affiliation) + "</p>" : "";
-      const theme = row.talk_title ? '<p class="invited-summary__theme">' + renderInline(row.talk_title) + "</p>" : "";
-      return '<section class="info-card invited-summary-card">' + image + '<div class="info-card__body">' + category + '<h3><a href="#' + escapeHtml(anchor) + '">' + renderInline(row.name || row.title || "") + '</a></h3>' + subtitle + theme + '</div></section>';
-    }).join("");
-
     const detailBlocks = rows.map(function (row, index) {
       const anchor = row.anchor || ("speaker-" + (index + 1));
       const image = row.image ? '<div class="invited-detail__image-wrap"><img class="invited-detail__image" src="' + escapeHtml(row.image) + '" alt="' + escapeHtml(row.name || row.title || "") + '"></div>' : "";
@@ -572,7 +563,7 @@
       return '<section class="invited-detail" id="' + escapeHtml(anchor) + '"><div class="invited-detail__header">' + image + '<div class="invited-detail__intro"><p class="info-card__eyebrow">' + renderInline(row.category || "招待講演") + '</p><h3>' + renderInline(row.name || row.title || "") + '</h3>' + profile + talkTitle + link + '</div></div>' + abstract + message + '</section>';
     }).join("");
 
-    return '<div class="invited-talks"><div class="card-grid">' + summaryCards + '</div><div class="invited-detail-list">' + detailBlocks + '</div></div>';
+    return '<div class="invited-talks"><div class="invited-detail-list">' + detailBlocks + '</div></div>';
   }
 
   async function renderHomePromo(config) {
