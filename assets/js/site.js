@@ -110,7 +110,7 @@
         { key: "topic", label: "担当・研究分野" }
       ]
     },
-    sponsors: { kind: "cards", source: "data/sponsors.csv" },
+    "sponsor-pdf": { kind: "document-embed", source: "data/sponsors_pdf.csv" },
     faq: { kind: "faq", source: "data/faq.csv" },
     links: { kind: "cards", source: "data/links.csv" }
   };
@@ -148,12 +148,31 @@
     value = value.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (_, label, href) {
       return '<a href="' + escapeHtml(href) + '"' + buildLinkAttrs(href) + ">" + label + "</a>";
     });
+    value = value.replace(/(^|[\s(>])((https?:\/\/|www\.)[^\s<]+)/g, function (_, prefix, url) {
+      const href = /^https?:\/\//i.test(url) ? url : "https://" + url;
+      return prefix + '<a href="' + escapeHtml(href) + '"' + buildLinkAttrs(href) + ">" + escapeHtml(url) + "</a>";
+    });
     value = value.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
     value = value.replace(/\*([^*]+)\*/g, "<em>$1</em>");
 
     return value.replace(/%%CODE(\d+)%%/g, function (_, index) {
       return codeStore[Number(index)];
     });
+  }
+
+  function stripInlineMarkdown(text) {
+    return String(text)
+      .replace(/`([^`]+)`/g, "$1")
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/\*([^*]+)\*/g, "$1")
+      .trim();
+  }
+
+  function buildHeadingId(text) {
+    return stripInlineMarkdown(text)
+      .replace(/\s+/g, "-")
+      .replace(/[()（）"'`]/g, "");
   }
 
   function renderTextBlock(text) {
@@ -286,7 +305,8 @@
 
   function renderMarkdownBlock(block) {
     if (block.type === "heading") {
-      return "<h" + block.level + ">" + renderInline(block.text) + "</h" + block.level + ">";
+      const headingId = buildHeadingId(block.text);
+      return "<h" + block.level + ' id="' + escapeHtml(headingId) + '">' + renderInline(block.text) + "</h" + block.level + ">";
     }
     if (block.type === "paragraph") {
       return "<p>" + renderInline(block.lines.join(" ")) + "</p>";
@@ -603,6 +623,22 @@
     }).join("") + "</div>";
   }
 
+  function renderDocumentEmbed(rows) {
+    const settings = csvRowsToMap(rows);
+    const file = settings.file || "";
+    const title = settings.title || "PDF";
+    const note = settings.note || "";
+    const linkLabel = settings.link_label || "別タブで開く";
+
+    return '<section class="document-panel">' +
+      '<p class="document-panel__note"><a href="' + escapeHtml(file) + '"' + buildLinkAttrs(file) + '>' + renderInline(linkLabel) + '</a></p>' +
+      '<div class="document-panel__frame">' +
+        '<iframe src="' + escapeHtml(file) + '#view=FitH" title="' + escapeHtml(title) + '"></iframe>' +
+      '</div>' +
+      (note ? '<p class="document-panel__note">' + renderInline(note) + '</p>' : "") +
+    '</section>';
+  }
+
   async function renderPlaceholder(name) {
     const config = PLACEHOLDERS[name];
     if (!config) {
@@ -629,6 +665,9 @@
     }
     if (config.kind === "home-promo") {
       return renderHomePromo(config);
+    }
+    if (config.kind === "document-embed") {
+      return renderDocumentEmbed(rows);
     }
     if (config.kind === "faq") {
       return renderFaq(rows);
