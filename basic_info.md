@@ -259,7 +259,7 @@ https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%AD%90%E7%94%BA%E7%A
 
 ### お問い合わせフォーム
 
-[お問い合わせフォームリンク](https://forms.cloud.microsoft/Pages/ShareFormPage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAUDgVvdUOElWSkE5VEdCUkdFRllGNlg0RDQ2OEdCUi4u&sharetoken=pnTcm8jbTlj9YT02YXZd)
+[お問い合わせフォームリンク](https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAUDgVvdUOElWSkE5VEdCUkdFRllGNlg0RDQ2OEdCUi4u)
 
 「3.お問い合わせ内容」の「協賛・寄付」を選択いただき、「4.協賛・寄付の内容」より協賛の種類をお選びください。
 
