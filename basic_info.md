@@ -258,7 +258,7 @@ https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%AD%90%E7%94%BA%E7%A
 
 ### キャンセルポリシー・免責事項
 
-- PDFファイル: `content/気象夏の学校2025 キャンセルポリシー.pdf`
+- PDFファイル: `content/気象夏の学校2026_キャンセルポリシー_免責事項.pdf`
 - `content/registration.md` では `::cancel-policy-pdf::` を使う
 - 別タブで開けるリンクを併記する
 
