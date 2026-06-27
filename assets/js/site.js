@@ -111,6 +111,7 @@
       ]
     },
     "sponsor-pdf": { kind: "document-embed", source: "data/sponsors_pdf.csv" },
+    "cancel-policy-pdf": { kind: "document-embed", source: "data/cancel_policy_pdf.csv" },
     faq: { kind: "faq", source: "data/faq.csv" },
     links: { kind: "cards", source: "data/links.csv" }
   };

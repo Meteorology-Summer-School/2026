@@ -256,6 +256,12 @@ https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%AD%90%E7%94%BA%E7%A
 - 送迎バスをご利用の場合は、別途バス代を頂戴いたします。
 - 振込先は、参加登録後に別途ご案内いたします。
 
+### キャンセルポリシー・免責事項
+
+- PDFファイル: `content/気象夏の学校2025 キャンセルポリシー.pdf`
+- `content/registration.md` では `::cancel-policy-pdf::` を使う
+- 別タブで開けるリンクを併記する
+
 ---
 
 ## 9. 協賛 `sponsors.html`
