@@ -104,10 +104,10 @@
       source: "data/participants.csv",
       compact: true,
       columns: [
-        { key: "division", label: "区分" },
+        { key: "division", label: "学年" },
         { key: "name", label: "氏名" },
         { key: "affiliation", label: "所属" },
-        { key: "topic", label: "担当・研究分野" }
+        { key: "topic", label: "ひとこと" }
       ]
     },
     "sponsor-pdf": { kind: "document-embed", source: "data/sponsors_pdf.csv" },
