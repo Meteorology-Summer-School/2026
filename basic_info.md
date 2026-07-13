@@ -247,7 +247,7 @@ https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%AD%90%E7%94%BA%E7%A
 
 ### 参加者一覧
 
-`data/2026夏学サイト公開用_参加者名簿.xlsx` をもとに、`data/participants.csv` へ反映する。
+`2026夏学サイト公開用_参加者名簿.xlsx` をもとに、`data/participants.csv` へ反映する。
 
 ※参加者一覧への掲載を許可していただいた方のみ掲載しています。
 
