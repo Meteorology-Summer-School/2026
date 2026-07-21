@@ -81,10 +81,11 @@
     schedule: {
       kind: "table",
       source: "data/schedule.csv",
+      rowspanKey: "day",
       columns: [
         { key: "day", label: "日程" },
-        { key: "time", label: "時間" },
-        { key: "program", label: "企画" },
+        { key: "time", label: "時間", className: "data-table__time" },
+        { key: "program", label: "内容" },
         { key: "details", label: "備考" }
       ]
     },
@@ -535,11 +536,23 @@
 
   function renderDataTable(rows, config) {
     const head = config.columns.map(function (column) {
-      return "<th>" + escapeHtml(column.label) + "</th>";
+      const className = column.className ? " class=\"" + escapeHtml(column.className) + "\"" : "";
+      return "<th" + className + ">" + escapeHtml(column.label) + "</th>";
     }).join("");
-    const body = rows.map(function (row) {
+    const body = rows.map(function (row, rowIndex) {
       const cells = config.columns.map(function (column) {
-        return "<td>" + stripOuterParagraph(renderTextBlock(row[column.key] || "")) + "</td>";
+        if (column.key === config.rowspanKey) {
+          if (rowIndex > 0 && rows[rowIndex - 1][column.key] === row[column.key]) {
+            return "";
+          }
+          let rowSpan = 1;
+          while (rows[rowIndex + rowSpan] && rows[rowIndex + rowSpan][column.key] === row[column.key]) {
+            rowSpan += 1;
+          }
+          return "<td class=\"data-table__group\" rowspan=\"" + rowSpan + "\">" + stripOuterParagraph(renderTextBlock(row[column.key] || "")) + "</td>";
+        }
+        const className = column.className ? " class=\"" + escapeHtml(column.className) + "\"" : "";
+        return "<td" + className + ">" + stripOuterParagraph(renderTextBlock(row[column.key] || "")) + "</td>";
       }).join("");
       return "<tr>" + cells + "</tr>";
     }).join("");

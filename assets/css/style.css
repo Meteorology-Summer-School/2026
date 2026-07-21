@@ -676,6 +676,18 @@ code {
   font-size: clamp(0.92rem, 1.6vw, 1rem);
 }
 
+.data-table__group {
+  background: rgba(232, 242, 249, 0.45);
+  font-weight: 700;
+  vertical-align: middle !important;
+  white-space: nowrap;
+}
+
+.data-table__time {
+  min-width: 4.5rem;
+  white-space: nowrap;
+}
+
 .info-table th,
 .data-table th {
   background: rgba(232, 242, 249, 0.8);
