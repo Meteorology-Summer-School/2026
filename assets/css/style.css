@@ -688,6 +688,19 @@ code {
   white-space: nowrap;
 }
 
+.data-table__participant-division,
+.data-table__participant-name {
+  white-space: nowrap;
+}
+
+.data-table__participant-division {
+  min-width: 3.2rem;
+}
+
+.data-table__participant-name {
+  min-width: 5.5rem;
+}
+
 .info-table th,
 .data-table th {
   background: rgba(232, 242, 249, 0.8);

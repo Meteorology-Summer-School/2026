@@ -105,8 +105,8 @@
       source: "data/participants.csv",
       compact: true,
       columns: [
-        { key: "division", label: "学年" },
-        { key: "name", label: "氏名" },
+        { key: "division", label: "学年", className: "data-table__participant-division" },
+        { key: "name", label: "氏名", className: "data-table__participant-name" },
         { key: "affiliation", label: "所属" },
         { key: "topic", label: "ひとこと" }
       ]
